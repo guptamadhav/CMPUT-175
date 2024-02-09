@@ -5,7 +5,7 @@
 # Collaborators:
 # References:
 #----------------------------------------------------
-import copy #to avoid modifying the original list
+
 class NumTicTacToe:
     def __init__(self):
         '''
@@ -23,6 +23,7 @@ class NumTicTacToe:
                 row.append(0)
             self.board.append(row)
                 
+                
     def drawBoard(self):
         '''
         Displays the current state of the board, formatted with column and row 
@@ -37,14 +38,16 @@ class NumTicTacToe:
         #   -----------
         # 1    |   |   
         #   -----------
-        # 2    |   |    
-        board_v = self.board.copy() # to avoid changing actual list
+        # 2    |   |          
+        board_n = self.board[:]  
         for i in range(self.size):
-            board_v[i] = [str(j) for j in board_v[i]]
-            board_v[i] = [" " if j=="0" else j for j in board_v[i] ]
-        board = f"   0   1   2\n0  {' | '.join(board_v[0])}\n  -----------\n1  {' | '.join(board_v[1])}\n  -----------\n2  {' | '.join(board_v[2])}"
-        print(board)
-
+            board_n[i] = [" " if j == 0 else j for j in board_n[i]]
+        print('    0   1   2')
+        for i in range(self.size):
+            print(f'{i}  {board_n[i][0]} | {board_n[i][1]} | {board_n[i][2]}')
+            if i < (self.size-1):
+                print('  '+'-'*11)
+        
 
     def squareIsEmpty(self, row, col):
         '''
@@ -55,11 +58,13 @@ class NumTicTacToe:
            col (int) - column index of square to check
         Returns: True if square is empty; False otherwise
         '''
-        if row<=2 and col<=2:
-            if self.board[row][col] == 0:
-                return True
-        else:
+        # TO DO: delete pass and complete method
+        
+        if self.board[row][col] > 0:
             return False
+
+        return True
+    
     
     def update(self, row, col, num):
         '''
@@ -71,24 +76,30 @@ class NumTicTacToe:
            num (int) - entry to place in square
         Returns: True if attempted update was successful; False otherwise
         '''
-        isThere = any(num in row for row in self.board)
-        if self.squareIsEmpty(row,col) and not isThere:
+        # TO DO: delete pass and complete method
+        if self.squareIsEmpty(row, col):
             self.board[row][col] = num
             return True
-        else:
-            return False
-    
-    
+
+        return False
+
     def boardFull(self):
         '''
         Checks if the board has any remaining empty squares.
         Inputs: none
         Returns: True if the board has no empty squares (full); False otherwise
         '''
-        full = any(0 in row for row in self.board)
-        # since any function will tell if any empty space is there in full and it gives true when there is
-        # an empty space and we want opposite of it so return not full
-        return not full        
+        # TO DO: delete pass and complete method
+        for i in self.board:
+            for j in i:
+                if j != 0:
+                    return True
+                else:
+                    return False
+                    break
+        
+        return False
+        
            
     def isWinner(self):
         '''
@@ -99,6 +110,7 @@ class NumTicTacToe:
         Returns: True if current player has won with their most recent move; 
                  False otherwise
         '''
+        # TO DO: delete pass and complete method
         win = False
         for i in range(self.size):
             if (self.board[i][0] + self.board[i][1] + self.board[i][2]) == 15:
@@ -111,7 +123,6 @@ class NumTicTacToe:
                 win = True
                 break
         return win
-
      
 
 if __name__ == "__main__":
@@ -122,7 +133,7 @@ if __name__ == "__main__":
     myBoard = NumTicTacToe()
     print('Contents of board attribute when object first created:')
     print(myBoard.board)
-    
+    myBoard.drawBoard()
     # does the empty board display properly?
 
 

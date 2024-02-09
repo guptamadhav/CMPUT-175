@@ -32,7 +32,7 @@ def getEntry(player, entries):
 def getCoord(player, dimension):
     '''
     Prompts for an index value corresponding to either the row or column (as
-    described by dimension) of a square on the board
+    described by dimension) of a square on the boa1rd
     Inputs:
        player (int) - number of current player (1 or 2)
        dimension (str) - describes what the index relates to (e.g. 'row' or 'column')
