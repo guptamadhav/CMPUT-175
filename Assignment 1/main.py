@@ -1,3 +1,4 @@
+import datetime as dt
 def product_list():
     products_file = "Assignment 1/transactions_Products.csv"
     with open(products_file, mode = "r") as f:
@@ -40,14 +41,13 @@ def sales_units(products_data, sales_data, return_data):
     for key, value in sales_data.items():
         if key not in return_data:
             units[value[1]] += value[2]
-            discount[value[1]] += value[3]
+            discount[value[1]] += (value[2]*value[3])
         if value[0] not in transactions_per_day:
             transactions_per_day[value[0]] = 1
         else:
             transactions_per_day[value[0]] += 1
     for key, value in units.items():
-        discount[key]/=value
-        sales[key] = products_data[key][1] * value
+        sales[key] = (products_data[key][1] * value) -(discount[key]*products_data[key][1])
     return units, sales, discount, transactions_per_day
 
 def top_3_sold_units(units_sold, products_data):
@@ -60,32 +60,36 @@ def top_3_sales_amount(sales_amount, products_data):
     sorted_sales_amount = dict(sorted(sales_amount.items(), key=lambda item: item[1], reverse=True))
     top_3_sales_gen = list(sorted_sales_amount.items())[:3]
     for key, value in top_3_sales_gen:
-        print("{:>20}".format(products_data[key][0])+" "+"{:>10}".format("$"+str(value)+".00"))
+        print("{:>20}".format(products_data[key][0])+" $"+"{:>10.2f}".format(value))
 
 def turnover(units_sold, sales_amount, discount_amount):
     net_report = {}
     for key, value in units_sold.items():
         name = products_data[key][0]
-        total_discounted_amount = discount_amount[key] * sales_amount[key]
-        net_report[key] = name, value, sales_amount[key], discount_amount[key], total_discounted_amount
-    report = dict(sorted(net_report.items(), key=lambda item: item[1][4]))
+        total_discounted_amount = discount_amount[key] * products_data[key][1]
+        net_report[key] = name, value, sales_amount[key], discount_amount[key]/value*100, total_discounted_amount
+    report = dict(sorted(net_report.items(), key=lambda item: item[1][4] ,reverse=True))
     for key, value in report.items():
-        print("+---+--------------------+---+-----------+------+-----------+")
-        print("|"+"{:>3}".format(key)+"|"+"{:>20}".format(value[0])+"|"+"{:>3}".format(value[1])+"|$"+"{:>10}".format(str(value[2])+".00")+"|"+"{:>5}".format("0"+str(round(value[3], 2))+"%")+"|$"+"{:>10}".format(str(round(value[4],2))+"0")+"|")
-    print("+---+--------------------+---+-----------+------+-----------+")
+        print("+---+--------------------+---+-----------+------+-----------+")x
+        print("|"+"{:>3}".format(key)+"|"+"{:>20}".format(value[0])+"|"+"{:>3}".format(value[1])+"|$"+"{:10,.2f}".format(value[2])+"|"+"{:>5.2f}".format(value[3])+"%|$"+"{:>10.2f}".format(value[4])+"|")
+    print("+---+--------------------+---+-----------+------+-----------+")      
 def transactions(transactions_per_day): 
+    transactions_days = {"Monday" : 0, "Tuesday": 0, "Wednesday": 0, "Thursday": 0, "Friday": 0, "Saturday": 0, "Sunday": 0}
     for key, value in transactions_per_day.items():
-        print("{:>9}".format(key)+":"+"{:>3}".format(value))
+        date = dt.datetime(int(key[:4]),int(key[5:7]),int(key[8:10]))
+        transactions_days[date.strftime("%A")] = value
+    for key, value in transactions_days.items():
+        print("{:>19}".format(key)+"{:>3}".format(value))
 
 def return_item(return_data, sales_data, products_data):
     return_items = {}
     for key, value in return_data.items():
         id = sales_data[key][1]
         name = products_data[id][0]
-        amount = sales_data[key][2]
+        # amount = sales_data[key][2]
         if id not in return_items:
             return_items[id] = [name, 0]
-        return_items[id][1] += amount
+        return_items[id][1] += 1
     for key,value in return_items.items():
         print("{:>3}".format(key)+" "+"{:>20}".format(value[0])+" "+"{:>3}".format(value[1]))
 
@@ -107,11 +111,9 @@ print("\n3. Turnover of Sales:")
 turnover(units_sold, sales_amount, discount_amount)
 
 # Q4) What are the number of transactions per weekday?
-print("\n4. (Before Return)Number of transactions per weekday:")
-transactions(transactions_data)
 for key, value in return_data.items():
     transactions_data[value] -= 1
-print("\n4. (After Return)Number of transactions per weekday:")
+print("\n4. Number of transactions per weekday:")
 transactions(transactions_data)
 
 # Q5) What are the returned products?
