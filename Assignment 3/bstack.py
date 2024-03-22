@@ -2,7 +2,7 @@ class Stack:
     def __init__(self):
         self.items = []
         self.__capacity = 4
-    
+
     def push(self, item):
         if len(self.items)<=self.__capacity:
             self.items.append(item)

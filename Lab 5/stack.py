@@ -46,7 +46,7 @@ class Stack:
         #TO DO: complete method according to updated ADT
         while not self.isEmpty():
             self.items.pop()
-        pass       
+     
 s = Stack()
 s.push(1)
 s.push(2)

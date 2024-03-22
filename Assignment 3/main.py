@@ -73,7 +73,15 @@ def build(data):
     return flasks
 
 def print_flasks(flasks):
-
+    reset = "\033[49m"
+    color = {
+        "AA" : "\033[41m",
+        "BB" : "\033[44m",
+        "CC" : "\033[42m",
+        "DD" : "\033[48;5;208m",
+        "EE" : "\033[43m",
+        "FF" : "\033[45m"
+        }
     for i in range(3,-1,-1):#in order to get elements of stack from top to bottom
         flask_i = ""
         for j in range(len(flasks)):
@@ -83,7 +91,8 @@ def print_flasks(flasks):
                     flask_i += "+--+  "
                 else:
                     try:
-                        flask_i += ("|"+items[i]+"|  ")
+                        chem = color[items[i]] + items[i] + reset
+                        flask_i += ("|"+chem+"|  ")
                     except IndexError:
                         flask_i += "|  |  "
             else:
@@ -105,7 +114,8 @@ def print_flasks(flasks):
                     flask_i += "+--+  "
                 else:
                     try:
-                        flask_i += ("|"+items[i]+"|  ")
+                        chem = color[items[i]] + items[i] + reset
+                        flask_i += ("|"+chem+"|  ")
                     except IndexError:
                         flask_i += "|  |  "
             print(flask_i)
@@ -138,11 +148,15 @@ def source(flasks):
     m = int(input())
     if m>len(flasks) or flasks[f"flask{m}"].isEmpty():
         print_location(5, 1,"Invalid Flask")
-        return False
+        print_location(3, 21, " ")
+        move_cursor(3,21)
+        return source(flasks)
     items = flasks[f"flask{m}"].items
     if isFull(items):
         print_location(5, 1, "The flask is sealed")
-        return False
+        print_location(3, 21, " ")
+        move_cursor(3,21)
+        return source(flasks)
     else:
         return m
 
@@ -150,14 +164,20 @@ def destination(m, flasks):
     n = int(input())
     if n>len(flasks):
         print_location(5, 1, "Invalid Flask")
-        return False
+        print_location(4, 26, " ")
+        move_cursor(4, 26)
+        return destination(m, flasks)
     items = flasks[f"flask{n}"].items
     if isFull(items) or flasks[f"flask{n}"].isFull():
         print_location(5, 1, "Cannot pour into that flask. Try again.")
-        return False
+        print_location(4, 26, " ")
+        move_cursor(4, 26)
+        return destination(m, flasks)
     elif m==n:
         print_location(5, 1, "Cannot pour into same flask. Try again")
-        return False
+        print_location(4, 26, " ")
+        move_cursor(4, 26)
+        return destination(m, flasks)
     else:
         return n
 
@@ -176,18 +196,16 @@ while not win:
     print_flasks(flasks)
     move_cursor(3, 21)
     m = source(flasks)
-    if not m:
-        time.sleep(0.5)
-        continue
     move_cursor(4, 26)
     n = destination(m, flasks)
-    if not n:
-        time.sleep(0.5)
-        continue
     pour(m, n, flasks)
     if complete(flasks):
-        print("You win!")
-        print_flasks(flasks)
+        print_location(5,1, "                                               ")
+        (print_flasks(flasks))
+        if len(flasks)<=4:
+            print_location(12,1,"You win!")
+        else:
+            print_location(19,1, "You win")
         win = True
-    time.sleep(0.5)
+    
     
