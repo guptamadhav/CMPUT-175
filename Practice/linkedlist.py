@@ -39,4 +39,7 @@ class linked_list:
 class DoublyLinkedList:
     def __init__(self) -> None:
         self.head = None
-    
+    def add(self, item):
+        new_node = Node(item)
+        new_node.next = self.head
+        self.head = new_node
