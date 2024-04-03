@@ -70,7 +70,7 @@ def turnover(units_sold, sales_amount, discount_amount):
         net_report[key] = name, value, sales_amount[key], discount_amount[key]/value*100, total_discounted_amount
     report = dict(sorted(net_report.items(), key=lambda item: item[1][4] ,reverse=True))
     for key, value in report.items():
-        print("+---+--------------------+---+-----------+------+-----------+")x
+        print("+---+--------------------+---+-----------+------+-----------+")
         print("|"+"{:>3}".format(key)+"|"+"{:>20}".format(value[0])+"|"+"{:>3}".format(value[1])+"|$"+"{:10,.2f}".format(value[2])+"|"+"{:>5.2f}".format(value[3])+"%|$"+"{:>10.2f}".format(value[4])+"|")
     print("+---+--------------------+---+-----------+------+-----------+")      
 def transactions(transactions_per_day): 
